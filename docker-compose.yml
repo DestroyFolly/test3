@@ -1,0 +1,62 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+#      - '--storage.tsdb.retention=72h'
+      - '--storage.tsdb.wal-compression'
+
+  gatling-at-once:
+    image: denvazh/gatling:latest
+    container_name: gatling-at-once
+    volumes:
+      - ./gatling/simulations:/opt/gatling/user-files/simulations
+      - ./gatling/results:/opt/gatling/results
+    depends_on:
+      - echo-ping
+      - fasthttp-ping
+    entrypoint: ["/bin/sh", "-c", "gatling.sh -s ServerAtOnceLoadSimulation"]
+
+  gatling-per-second:
+    image: denvazh/gatling:latest
+    container_name: gatling-per-second
+    volumes:
+      - ./gatling/simulations:/opt/gatling/user-files/simulations
+      - ./gatling/results:/opt/gatling/results
+    depends_on:
+      gatling-at-once:
+        condition: service_completed_successfully
+    entrypoint: ["/bin/sh", "-c", "gatling.sh -s ServerPerSecondLoadSimulation"]
+
+  echo-ping:
+    image: go_env:latest
+    container_name: echo-ping
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4g
+    ports:
+      - "8080:8080"
+    depends_on:
+      - prometheus
+    entrypoint: ["/bin/sh", "-c", "go run prometheus/echo/core.go"]
+
+  fasthttp-ping:
+    image: go_env:latest
+    container_name: fasthttp-ping
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4g
+    ports:
+      - "8081:8080"
+    depends_on:
+      - prometheus
+    entrypoint: ["/bin/sh", "-c", "go run prometheus/fasthttp/core.go"]
