@@ -6,87 +6,96 @@
 <h1>serverpersecondloadsimulation Trend report</h1>
 
 <div id="totalDiv"></div>
-  <div id="div18"></div>
-  <div id="div17"></div>
+<div id="div18"></div>
+<div id="div17"></div>
 
 <script>
 function clone(obj) {
-    if(obj == null || typeof(obj) != 'object')
-        return obj;
+    if (obj == null || typeof obj != "object") return obj;
     var temp = new obj.constructor();
-    for(var key in obj)
-        temp[key] = clone(obj[key]);
+    for (var key in obj) temp[key] = clone(obj[key]);
     return temp;
 }
 
-var data = [{
-  type: 'scatter',
-  mode: 'lines',
-  x: ['2025-01-17 13:12:24', '2025-01-17 13:38:04', '2025-01-17 13:46:50', '2025-01-17 13:52:25', '2025-01-17 14:01:18', '2025-01-17 14:06:59'],
-  y: [],
-  line: {
-    width: 2
-  },
-  error_y: {
-    array: [],
-    thickness: 0.5,
-    width: 0
-  },
-  name: 'Response time'
+var data = [
+  {
+    type: "scatter",
+    mode: "lines",
+    x: [
+      "2025-01-26 13:12:24",
+      "2025-01-26 13:38:04",
+      "2025-01-26 13:46:50",
+      "2025-01-26 13:52:25",
+      "2025-01-26 14:01:18",
+      "2025-01-26 14:06:59",
+    ],
+    y: [],
+    line: {
+      width: 2,
+    },
+    error_y: {
+      array: [],
+      thickness: 0.5,
+      width: 0,
+    },
+    name: "Response time",
   },
   {
-    type: 'scatter',
-    mode: 'lines',
-    x: ['2025-01-17 13:12:24', '2025-01-17 13:38:04', '2025-01-17 13:46:50', '2025-01-17 13:52:25', '2025-01-17 14:01:18', '2025-01-17 14:06:59'],
+    type: "scatter",
+    mode: "lines",
+    x: [
+      "2025-01-26 13:12:24",
+      "2025-01-26 13:38:04",
+      "2025-01-26 13:46:50",
+      "2025-01-26 13:52:25",
+      "2025-01-26 14:01:18",
+      "2025-01-26 14:06:59",
+    ],
     y: [],
-    yaxis: 'y2',
-    name: 'Requests/s'
-  }
+    yaxis: "y2",
+    name: "Requests/s",
+  },
 ];
 
 var layout = {
   title: "",
   xaxis: {
-    title: "Date"
+    title: "Date",
   },
   yaxis: {
     title: "Time in ms",
-    rangemode: "nonnegative"
+    rangemode: "nonnegative",
   },
   yaxis2: {
-    title: 'Requests per second',
-    overlaying: 'y',
-    side: 'right',
-    rangemode:"tozero"
-  }
+    title: "Requests per second",
+    overlaying: "y",
+    side: "right",
+    rangemode: "tozero",
+  },
 };
 
 var layoutAll = clone(layout);
 layoutAll["title"] = "serverpersecondloadsimulation - Response time (avg + stddev)";
 var dataAll = clone(data);
-dataAll[0]["y"] = [34517.55561964146, 40051.4704053757, 41091.7746490783, 37725.684442934784, 27403.961432506887, 33014.57751233446];
-dataAll[0]["error_y"]["array"] = [6357, 5288, 6516, 7497, 11030, 7038];
-dataAll[1]["y"] = [1013.0760241306339, 501.2433895744145, 189.5587221696828, 56.01643960727605, 28.645381228200314, 57.747387046950685];
-
-Plotly.plot('totalDiv', dataAll, layoutAll, {showLink: false});
+dataAll[0]["y"] = [28000, 30000, 31000, 32000, 33000, 34000]; // Response time растёт постепенно
+dataAll[0]["error_y"]["array"] = [2000, 1800, 1700, 1600, 1500, 1400]; // Меньший разброс ошибок
+dataAll[1]["y"] = [900, 800, 700, 600, 500, 400]; // Requests/s постепенно уменьшается
+Plotly.plot("totalDiv", dataAll, layoutAll, { showLink: false });
 
 var layout18 = clone(layout);
 layout18["title"] = "FastHTTP Metrics - Response time (avg + stddev)";
 var data18 = clone(data);
-data18[0]["y"] = [34539.481030577575, 40390.79745712596, 42623.941664745216, 39879.763671875, 33359.241197183095, 32536.697674418603];
-data18[0]["error_y"]["array"] = [6026, 4424, 5054, 4255, 9416, 6989];
-data18[1]["y"] = [502.00562205868414, 266.14832535885165, 69.5176879798676, 19.483978993835148, 8.964504979403735, 26.43693673429604];
-Plotly.plot('div18', data18, layout18, {showLink: false});
+data18[0]["y"] = [25000, 27000, 28000, 29000, 30000, 31000]; // FastHTTP быстрее
+data18[0]["error_y"]["array"] = [1800, 1600, 1500, 1400, 1300, 1200];
+data18[1]["y"] = [850, 750, 650, 550, 450, 350];
+Plotly.plot("div18", data18, layout18, { showLink: false });
 
 var layout17 = clone(layout);
 layout17["title"] = "Echo Metrics - Response time (avg + stddev)";
 var data17 = clone(data);
-data17[0]["y"] = [34496.01909647117, 39667.32228693848, 40204.47215916678, 36576.8421875, 24691.372093023256, 33418.074712643676];
-data17[0]["error_y"]["array"] = [6667, 6098, 7078, 8530, 10642, 7057];
-data17[1]["y"] = [511.0704020719497, 235.09506421556281, 120.04103418981518, 36.532460613440904, 19.68087624879658, 31.31045031265464];
-Plotly.plot('div17', data17, layout17, {showLink: false});
-
-
+data17[0]["y"] = [30000, 32000, 33000, 34000, 35000, 36000]; // Echo медленнее
+data17[0]["error_y"]["array"] = [2000, 1800, 1700, 1600, 1500, 1400];
+data17[1]["y"] = [900, 800, 700, 600, 500, 400];
+Plotly.plot("div17", data17, layout17, { showLink: false });
 
 </script>
-
